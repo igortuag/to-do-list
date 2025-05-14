@@ -1,9 +1,9 @@
-export const Task = ({ task }) => {
+export const Task = ({ task, onToggle }) => {
   return <li>
     <input
       type="checkbox"
       checked={task.done}
-      onChange={() => { }}
+      onChange={() => onToggle(task.id)}
     />
     {task.text}
   </li>;

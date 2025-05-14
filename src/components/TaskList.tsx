@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Task } from "./Task";
+import { AddTask } from "./AddTask";
 
 const TASK_LIST = [
   { id: 1, text: "Aprender React", done: false },
@@ -13,11 +14,23 @@ export const TaskList = () => {
     setTasks([...tasks, { id: Date.now(), text, done: false }]);
   };
 
+  const toggleTask = (id) => {
+    setTasks(
+      tasks.map((task) =>
+        task.id === id ? { ...task, done: !task.done } : task
+      )
+    );
+  };
+
   return (
-    <ul>
-      {tasks.map((task) => (
-        <Task key={task.id} task={task} />
-      ))}
-    </ul>
+    <section>
+      <AddTask onAddTask={addTask} />
+      <h2>Lista de Tarefas</h2>
+      <ul>
+        {tasks.map((task) => (
+          <Task key={task.id} task={task} onToggle={toggleTask} />
+        ))}
+      </ul>
+    </section>
   );
 };
