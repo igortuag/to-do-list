@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Task } from "./Task";
 import { AddTask } from "./AddTask";
 
@@ -9,7 +9,11 @@ const TASK_LIST = [
 
 export const TaskList = () => {
   const [tasks, setTasks] = useState(TASK_LIST);
-  const [filter, setFilter] = useState("all"); // 'all', 'active', 'completed'
+  const [filter, setFilter] = useState(() => {
+    const savedFilter = localStorage.getItem("taskFilter");
+    if (savedFilter) return savedFilter;
+    return "all"; // default filter
+  }); // 'all', 'active', 'completed'
 
   const addTask = (text) => {
     if (!text.trim()) return;
@@ -30,10 +34,27 @@ export const TaskList = () => {
     return true; // 'all'
   });
 
+  // Salvar filtro
+  useEffect(() => {
+    if (!filter) return;
+    localStorage.setItem("taskFilter", filter);
+  }, [filter]);
+
+  // Carregar filtro ao iniciar
+  useEffect(() => {
+    const savedFilter = localStorage.getItem("taskFilter");
+
+    if (savedFilter) setFilter(savedFilter);
+  }, []);
+
   return (
     <section>
       <AddTask onAddTask={addTask} />
       <h2>Lista de Tarefas</h2>
+
+      <button onClick={() => setTasks(tasks.filter((task) => !task.done))}>
+        Limpar concluídas
+      </button>
 
       <div className="filters">
         <button onClick={() => setFilter("all")}>Todas</button>
