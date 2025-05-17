@@ -8,7 +8,11 @@ const TASK_LIST = [
 ];
 
 export const TaskList = () => {
-  const [tasks, setTasks] = useState(TASK_LIST);
+  const [tasks, setTasks] = useState(() => {
+    const savedTasks = localStorage.getItem("tasks");
+    if (savedTasks) return JSON.parse(savedTasks);
+    return TASK_LIST; // default tasks
+  }); // executa apenas uma vez
   const [filter, setFilter] = useState(() => {
     const savedFilter = localStorage.getItem("taskFilter");
     if (savedFilter) return savedFilter;
@@ -46,6 +50,10 @@ export const TaskList = () => {
 
     if (savedFilter) setFilter(savedFilter);
   }, []);
+
+  useEffect(() => {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+  }, [tasks]); // Executa sempre que `tasks` mudar
 
   return (
     <section>
